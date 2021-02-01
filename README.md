@@ -12,10 +12,10 @@ Reference: https://arxiv.org/pdf/1507.06527.pdf
 - I set the partially observed state is position of cart and pole's position. The agent doesn't have idea of the velocity.
 * * *
 ## DQN with Fully Oberserved vs DQN with POMDP vs DRQN with POMDP
-<img src="./assets/rewardlog.png" align="center"></img>
-- DQN with fully observed MDP situation can reach the highest reward.
-- DQN with POMDP never can be reached to the high reward situation.
-- DRQN with POMDP can be reach the somewhat performance although it only can observe the position.
+<img src="./assets/rewardlog.png" align="center" height="400px"></img>
+- (orange)DQN with fully observed MDP situation can reach the highest reward.
+- (blue)DQN with POMDP never can be reached to the high reward situation.
+- (red)DRQN with POMDP can be reach the somewhat performance although it only can observe the position.
 
 
 ### TODO
