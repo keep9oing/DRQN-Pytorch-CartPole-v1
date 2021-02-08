@@ -25,7 +25,7 @@ Reference: https://arxiv.org/pdf/1507.06527.pdf
 ## Stable Recurrent Updates
 ### 1. Bootstrapped Sequential Updates
 - episodes are selected randomly from the replay memory and updates begin at the beginning of the episode and proceed forward through time to the conclusion of the episode. The targets at each timestep are generated from the target Q-network. The RNN's hidden state is carried forward throughout episode.
-### 2. Sequential update
+### 2. Bootstrapped Random update
 - Episodes are selected randomly from the replay memory and updates begin at random points in the episode and proceed for only unroll iterations timesteps(lookup_step). The targets at each timestep are generated from the target Q-network. __The RNN's initial state is zeroed at the start of the update.__
 
 <img src="./assets/DRQN_param.png" align="center"></img>
