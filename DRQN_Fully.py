@@ -198,7 +198,7 @@ def train(q_net=None, target_q_net=None, episode_memory=None,
 
     h, c = q_net.init_hidden_state(batch_size=batch_size, training=True)
     q_out, _, _ = q_net(observations, h.to(device), c.to(device))
-    q_a = q_out.gather(2, actions)
+    q_a = q_out.gather(2, actions).max(dim=2, keepdim=True)
 
     # Multiply Importance Sampling weights to loss        
     loss = F.smooth_l1_loss(q_a, targets)
