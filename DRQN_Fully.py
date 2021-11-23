@@ -29,17 +29,20 @@ class Q_net(nn.Module):
         self.action_space = action_space
 
         self.Linear1 = nn.Linear(self.state_space, self.hidden_space)
-        self.lstm    = nn.LSTM(self.hidden_space,self.hidden_space, batch_first=True)
+        # self.lstm    = nn.LSTM(self.hidden_space,self.hidden_space, batch_first=True)
+        self.GRU = nn.GRU(self.hidden_space, self.hidden_space, batch_first=True)
         self.Linear2 = nn.Linear(self.hidden_space, self.action_space)
 
-    def forward(self, x, h, c):
+    def forward(self, x, h):
         x = F.relu(self.Linear1(x))
-        x, (new_h, new_c) = self.lstm(x,(h,c))
+        # x, (new_h, new_c) = self.lstm(x,(h,c)) # c was passed as param into function
+        x, new_h = self.GRU(x, h)
         x = self.Linear2(x)
-        return x, new_h, new_c
+        # return x, new_h, 
+        return x, new_h
 
-    def sample_action(self, obs, h,c, epsilon):
-        output = self.forward(obs, h,c)
+    def sample_action(self, obs, h, epsilon):
+        output = self.forward(obs, h)
 
         if random.random() < epsilon:
             return random.randint(0,1), output[1], output[2]
@@ -50,10 +53,14 @@ class Q_net(nn.Module):
 
         assert training is not None, "training step parameter should be dtermined"
 
+        # if training is True:
+        #     return torch.zeros([1, batch_size, self.hidden_space]), torch.zeros([1, batch_size, self.hidden_space])
+        # else:
+        #     return torch.zeros([1, 1, self.hidden_space]), torch.zeros([1, 1, self.hidden_space])
         if training is True:
-            return torch.zeros([1, batch_size, self.hidden_space]), torch.zeros([1, batch_size, self.hidden_space])
+            return torch.zeros([1, batch_size, self.hidden_space])
         else:
-            return torch.zeros([1, 1, self.hidden_space]), torch.zeros([1, 1, self.hidden_space])
+            return torch.zeros([1, 1, self.hidden_space])
 
 class EpisodeMemory():
     """Episode memory for recurrent agent"""
@@ -188,16 +195,18 @@ def train(q_net=None, target_q_net=None, episode_memory=None,
     next_observations = torch.FloatTensor(next_observations.reshape(batch_size,seq_len,-1)).to(device)
     dones = torch.FloatTensor(dones.reshape(batch_size,seq_len,-1)).to(device)
 
-    h_target, c_target = target_q_net.init_hidden_state(batch_size=batch_size, training=True)
+    # h_target, c_target = target_q_net.init_hidden_state(batch_size=batch_size, training=True)
+    h_target = target_q_net.init_hidden_state(batch_size=batch_size, training=True)
 
-    q_target, _, _ = target_q_net(next_observations, h_target.to(device), c_target.to(device))
+
+    q_target, _ = target_q_net(next_observations, h_target.to(device), c_target.to(device))
 
     q_target_max = q_target.max(2)[0].view(batch_size,seq_len,-1).detach()
     targets = rewards + gamma*q_target_max*dones
 
 
-    h, c = q_net.init_hidden_state(batch_size=batch_size, training=True)
-    q_out, _, _ = q_net(observations, h.to(device), c.to(device))
+    h = q_net.init_hidden_state(batch_size=batch_size, training=True)
+    q_out, _ = q_net(observations, h.to(device))
     q_a = q_out.gather(2, actions)
 
     # Multiply Importance Sampling weights to loss        
@@ -289,12 +298,12 @@ if __name__ == "__main__":
         done = False
         
         episode_record = EpisodeBuffer()
-        h, c = Q.init_hidden_state(batch_size=batch_size, training=False)
+        h = Q.init_hidden_state(batch_size=batch_size, training=False)
 
         for t in range(max_step):
 
             # Get action
-            a, h, c = Q.sample_action(torch.from_numpy(obs).float().to(device).unsqueeze(0).unsqueeze(0), 
+            a, h = Q.sample_action(torch.from_numpy(obs).float().to(device).unsqueeze(0).unsqueeze(0), 
                                               h.to(device), c.to(device),
                                               epsilon)
 
