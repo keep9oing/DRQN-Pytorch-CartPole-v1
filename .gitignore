@@ -1,3 +1,4 @@
 /.vscode/
 /runs/
 /__pycache__/
+buffer/*
