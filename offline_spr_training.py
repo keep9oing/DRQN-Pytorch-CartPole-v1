@@ -294,6 +294,12 @@ if __name__ == "__main__":
     plot_folder = "./plots"
     if not os.path.isdir(plot_folder):
         os.makedirs(plot_folder)
+    if not os.path.isdir(os.path.join(plot_folder), "arrays"):
+        os.makedirs(os.path.join(plot_folder), "arrays")
     plot_name = f"random_spr_k{args.k_steps}_{args.loss}.png"
     plot_path = os.path.join(plot_folder, plot_name)
     plt.savefig(plot_path)
+
+    array_name = f"random_spr_k{args.k_steps}_{args.loss}.npz"
+    array_path = os.path.join(os.path.join(plot_folder, "arrays"), array_name)
+    np.save(array_path, losses)
