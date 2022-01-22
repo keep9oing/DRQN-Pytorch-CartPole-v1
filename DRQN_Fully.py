@@ -329,7 +329,7 @@ def spr_train(
         ]  # t-1 slicing since targets generated from next_observations
         target_projection = soft_projection(target_encoding)
 
-        # currently online_prediction is [64, 16] and target_projection is [64, 8, 16]
+        # currently online_prediction is [64, 7, 16] and target_projection is [64, 8, 16]
         spr_loss_ = loss_function(online_prediction, target_projection)
         spr_loss += spr_loss_
 
