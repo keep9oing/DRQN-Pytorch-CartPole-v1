@@ -325,7 +325,7 @@ def spr_train(
 
         # targets can be done outside since the encoder model does not change
         target_encoding = targets[
-            t - 1 :
+            :, t - 1 :
         ]  # t-1 slicing since targets generated from next_observations
         target_projection = soft_projection(target_encoding)
 
