@@ -319,7 +319,7 @@ def spr_train(
 
     for t in range(1, k_steps + 1):
         next_encoding = transition_model(stacked)
-        next_encoding = next_encoding[:, :-t]  # discard from the back
+        next_encoding = next_encoding[:, : -(t - 1)]  # discard from the back
         online_projection = projection(next_encoding)
         online_prediction = predictor(online_projection)
 
