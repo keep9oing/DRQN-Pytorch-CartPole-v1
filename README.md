@@ -16,17 +16,17 @@ Reference: https://arxiv.org/pdf/1507.06527.pdf
 * * *
 ## POMDP
 
-- CartPole-v1 environment is consists of Cart position/velocity, Pole angle/velocity.
+- CartPole-v1 environment consists of the cart's position&velocity and pole's angle&velocity.
 &nbsp;
 
 <img src="./assets/cartpolestate.png" align="center"></img>
-- I set the partially observed state is position of cart and pole's angle. __The agent doesn't have idea of the velocity.__
+- I set the partially observed state as the position of cart and pole's angle. __The agent has any idea of the velocity.__
 * * *
 ## Stable Recurrent Updates
 ### 1. Bootstrapped Sequential Updates
-- episodes are selected randomly from the replay memory and updates begin at the beginning of the episode and proceed forward through time to the conclusion of the episode. The targets at each timestep are generated from the target Q-network. The RNN's hidden state is carried forward throughout episode.
+- episodes are selected randomly from the replay memory then updating stage starts at the **beginning** of the episode. The targets at each timestep are generated from the target Q-network. The RNN's hidden state is carried forward throughout episode.
 ### 2. Bootstrapped Random update
-- Episodes are selected randomly from the replay memory and updates begin at random points in the episode and proceed for only unroll iterations timesteps(lookup_step). The targets at each timestep are generated from the target Q-network. __The RNN's initial state is zeroed at the start of the update.__
+- Episodes are selected randomly from the replay memory then updating stage starts at **random points** in the episode and proceed for only unroll iterations timesteps(lookup_step). The targets at each timestep are generated from the target Q-network. __The RNN's initial state is zeroed at the start of the update.__
 
 <img src="./assets/DRQN_param.png" align="center"></img>
 
@@ -38,7 +38,7 @@ Reference: https://arxiv.org/pdf/1507.06527.pdf
 <img src="./assets/rewardlog.png" align="center" height="400px"></img>
 - (orange)DQN with fully observed MDP situation can reach the highest reward.
 - (blue)DQN with POMDP never can be reached to the high reward situation.
-- (red)DRQN with POMDP can be reach the somewhat performance although it only can observe the position.
+- (red)DRQN with POMDP can be reached the somewhat performance although it only can observe the position.
 
 
 ### TODO
